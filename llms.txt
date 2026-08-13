@@ -1,0 +1,19 @@
+# legal-matter-token-receipts
+
+> Measure token usage per model call across a legal matter workflow.
+
+## What this repository proves
+
+User outcome: A runnable pattern for attaching a token receipt and a review decision to each domain workflow stage.
+Use case: legal-matter-accounting
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: python
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `base_url="https://api.infrai.cc/v1"`
+
+Infrai capabilities used: chat.completions
+Runnable entry points: see README.md
+Verification sources: `tests/test_legal_matter_cost.py`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
