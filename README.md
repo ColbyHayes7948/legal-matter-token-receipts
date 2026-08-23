@@ -1,10 +1,10 @@
 # Token receipts for a legal matter workflow
 
-This example follows one matter from intake to signed-document delivery and then to a deadline follow-up. It uses the OpenAI Python client with Infrai's OpenAI-compatible `base_url`, so a single `INFRAI_API_KEY` covers the three model calls while the application keeps a receipt for each one.
+This example walks one matter from intake through signed-document delivery and a deadline follow-up. We use the OpenAI Python client against Infrai's OpenAI-compatible `base_url`, so a single `INFRAI_API_KEY` covers the three model calls while the app keeps a receipt per call. Infrai gives you one key and one bill for every capability, reachable as a plain REST call from any language with no SDK.
 
 ## Start with the business decision
 
-The input is matter `MAT-1042`, the signed document description, and a follow-up deadline of `5` days. Each call contributes its prompt and completion tokens. The final decision sends the matter to human review when the deadline is within 7 days and the workflow reaches at least 900 tokens.
+The input is matter `MAT-1042`, the signed document description, and a follow-up deadline of `5` days. Each call contributes its prompt and completion tokens. The final decision routes the matter to human review when the deadline is within 7 days and the workflow reaches at least 900 tokens.
 
 Install the dependency and provide the key:
 
@@ -21,13 +21,13 @@ Run the concrete workflow:
 python3 src/legal_matter_cost.py
 ```
 
-The successful run prints the matter id, the summed token receipt, and `decision: human review`. The model response text is intentionally not persisted here; the example is about the accounting boundary around each call.
+The successful run prints the matter id, the summed token receipt, and `decision: human review`. We don't persist the model response text here on purpose. The point is the accounting boundary around each call, not the content.
 
 ## What to copy
 
-`run_matter` is the application-shaped entry point. It gives each stage a domain name, calls `model="auto"`, reads the typed `usage` object, and returns a receipt that can be written to a ledger or attached to a job record. The retry branch waits exponentially after a rate limit and uses `Retry-After` when supplied.
+`run_matter` is the application-shaped entry point. It gives each stage a domain name, calls `model="auto"`, reads the typed `usage` object, and returns a receipt that can be written to a ledger or attached to a job record. The retry branch backs off exponentially after a rate limit and uses `Retry-After` when supplied.
 
-The one real gotcha is placement: measure usage immediately from the response belonging to that stage. Summing a later batch or a whole request handler hides which legal action consumed the tokens.
+The one real gotcha is placement. Measure usage immediately from the response belonging to that stage. Summing a later batch or a whole request handler hides which legal action consumed the tokens. In a postmortem this is usually where the duplicate charges show up.
 
 ## Verify the rule without a network call
 
